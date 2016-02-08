@@ -1,0 +1,5 @@
+/vedroecho.iml
+.settings
+.idea
+target/
+bower_components/

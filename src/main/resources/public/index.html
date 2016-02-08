@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html ng-app="vedroapp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Панель управления</title>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link href="../bower_components/bootstrap-material-design/dist/css/material-fullpalette.css" rel="stylesheet">
+    <link rel="stylesheet" href="../bower_components/bootstrap-material-design/dist/css/material.css" />
+    <link rel="stylesheet" href="../bower_components/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,500' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../bower_components/bootstrap-material-design/dist/js/material.js"></script>
+    <script type="text/javascript" src="../bower_components/bootstrap-material-design/dist/js/material.js"></script>
+    <script type="text/javascript" src="../bower_components/momentjs/min/moment-with-locales.js"></script>
+    <script type="text/javascript" src="../bower_components/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-route/angular-route.js"></script>
+    <script src="../bower_components/angular-resource/angular-resource.js"></script>
+
+    <script src="../public/js/app.js"></script>
+    <style>
+        body,
+        h4 {
+        font-family: 'Roboto', sans-serif;
+        font-size: 16px;
+        }
+
+        html {
+        position: relative;
+        min-height: 100%;
+        }
+
+        body {
+        /* Margin bottom by footer height */
+        margin-bottom: 60px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <div class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">Комариный Сервис</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div ng-controller="DriveCtrl">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4>
+                                Панель управления
+                            </h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <form novalidate role="form" action="" method="post">
+                                    <div class="form-group">
+                                        <div class="container-fluid">
+                                            <label for="deviceMode" class="col-xs-4 control-label">
+                                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Режим работы
+                                            </label>
+                                            <div class="col-xs-8">
+                                                <select id="deviceMode" ng-model="device.deviceMode" class="form-control">
+                                                    <option value="0">Ручной</option>
+                                                    <option value="1">Автоматический</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="container-fluid">
+                                            <label class="col-xs-4 control-label">
+                                                <span class="glyphicon glyphicon-time" aria-hidden="true"></span> Таймер1
+                                            </label>
+                                            <div class="col-xs-4">
+                                                <input id="timer1start" ng-model="device.timer1start" type="text" class="form-control floating-label" placeholder="Время запуска">
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <input id="timer1stop" ng-model="device.timer1stop" type="text" class="form-control  floating-label" placeholder="Время остановки">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="container-fluid">
+                                            <label class="col-xs-4 control-label">
+                                                <span class="glyphicon glyphicon-time" aria-hidden="true"></span> Таймер2
+                                            </label>
+                                            <div class="col-xs-4">
+                                                <input id="timer2start" ng-model="device.timer2start" type="text" class="form-control floating-label" placeholder="Время запуска">
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <input id="timer2stop" ng-model="device.timer2stop" type="text" class="form-control  floating-label" placeholder="Время остановки">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="container-fluid">
+                                            <label class="col-xs-4 control-label">
+                                                <span class="glyphicon glyphicon-scale" aria-hidden="true"></span> Расход газа
+                                            </label>
+                                            <div class="col-xs-8">
+                                                <select id="flowRate" ng-model="device.flowRate" class="form-control">
+                                                    <option value="0">0%</option>
+                                                    <option value="50">50%</option>
+                                                    <option value="70">70%</option>
+                                                    <option value="100">100%</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="container-fluid">
+                                            <label class="col-xs-4 control-label">
+                                                <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span> Контроль расхода газа
+                                            </label>
+                                            <div class="col-xs-8">
+                                                <div class="togglebutton">
+                                                    <div class="form-group label-static">
+                                                        <label for="flowControlEnabled" class="control-label">
+                                                            <input id="flowControlEnabled" ng-model="device.flowControlEnabled" type="checkbox" checked="">
+                                                            <span class="toggle"></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="submit" ng-click="save(device)" value="Применить" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-controller="ShowCtrl">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h4>
+                                Панель отображения состояния
+                            </h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Firstname</th>
+                                            <th>Lastname</th>
+                                            <th>Email</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>John</td>
+                                            <td>Doe</td>
+                                            <td>john@example.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mary</td>
+                                            <td>Moe</td>
+                                            <td>mary@example.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td>July</td>
+                                            <td>Dooley</td>
+                                            <td>july@example.com</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
