@@ -7,16 +7,19 @@
     <groupId>org.almkg</groupId>
     <artifactId>simplemosquitoservice</artifactId>
     <version>0.1-SNAPSHOT</version>
+    <properties>
+        <vertxVersion>LATEST</vertxVersion>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
-            <version>3.2.0</version>
+            <version>${vertxVersion}</version>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-web</artifactId>
-            <version>3.2.0</version>
+            <version>${vertxVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.hsqldb</groupId>
@@ -26,32 +29,27 @@
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-jdbc-client</artifactId>
-            <version>3.2.0</version>
+            <version>${vertxVersion}</version>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-sql-common</artifactId>
-            <version>3.2.0</version>
+            <version>${vertxVersion}</version>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-auth-jdbc</artifactId>
-            <version>3.2.0</version>
+            <version>${vertxVersion}</version>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-reactive-streams</artifactId>
-            <version>3.2.0</version>
+            <version>${vertxVersion}</version>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-rx-java</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>4.0</version>
+            <version>${vertxVersion}</version>
         </dependency>
         <dependency>
             <groupId>com.darylteo.vertx</groupId>

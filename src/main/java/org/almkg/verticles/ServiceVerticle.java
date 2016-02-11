@@ -1,7 +1,5 @@
 package org.almkg.verticles;
 
-import com.darylteo.vertx.promises.java.Promise;
-import com.google.inject.Inject;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
@@ -15,9 +13,8 @@ import io.vertx.core.parsetools.RecordParser;
 import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-import org.almkg.database.IDBConnection;
-import org.almkg.database.QueryDAO;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -29,10 +26,12 @@ public class ServiceVerticle extends AbstractVerticle {
 
     private Logger logger = LoggerFactory.getLogger(ServiceVerticle.class);
     private AtomicReference<SQLConnection> connection;
-    private final String EVENT_ADDRESS = "datatest";
+    private final String FROM_USER_EVENT_ADDRESS = "org.almkg.fromuser";
+    private final String TO_USER_EVENT_ADDRESS = "org.almkg.touser";
 
     @Override
     public void start() throws Exception {
+        logger.info("start service");
         JDBCClient client = JDBCClient.createShared(Vertx.vertx(), new JsonObject()
                 .put("url", "jdbc:hsqldb:mem:test?shutdown=true")
                 .put("driver_class", "org.hsqldb.jdbcDriver"));
@@ -45,20 +44,20 @@ public class ServiceVerticle extends AbstractVerticle {
 
                 // HTTP
                 Router router = Router.router(vertx);
-                router.route().handler(StaticHandler.create().setWebRoot("public"));
-                router.post("/form").produces("application/json").handler(context -> {
+                router.route().handler(BodyHandler.create());
+                router.route(HttpMethod.POST, "/").consumes("application/json").handler(context -> {
+                    logger.info(context.getBody());
                     JsonObject values = context.getBodyAsJson();
-                    if (values.size() != 0) {
-                        logger.debug("POST запрос от клиента с данными прилетел!");
-                        logger.debug(values.toString());
+                    if (values != null && values.size() != 0) {
+                        logger.info("POST запрос от клиента с данными прилетел!");
+                        logger.info(values.toString());
                         // полетело по шине
-                        eventBus.send(EVENT_ADDRESS, values.toString());
+                        eventBus.send(FROM_USER_EVENT_ADDRESS, values.toString());
                     }
                     HttpServerResponse response = context.response();
-//                    response.putHeader("content-type", "application/json");
-//                    response.write(new JsonObject().put("dsd","dsd").encode()).end();
-                    response.end();
+                    response.setStatusCode(204).end();
                 });
+                router.route().handler(StaticHandler.create());
                 vertx.createHttpServer().requestHandler(router::accept).listen(8080);
 
                 // TCP
@@ -88,9 +87,9 @@ public class ServiceVerticle extends AbstractVerticle {
 
                         // eventbus подписчик
 
-                        eventBus.consumer("data", event -> {
-                            logger.debug("данные от клиента обновить!");
-                            logger.debug(event.body());
+                        eventBus.consumer(FROM_USER_EVENT_ADDRESS, event -> {
+                            logger.info("данные от клиента обновить!");
+                            logger.info(event.body());
                         });
                     } else {
                         logger.info("TCP Сервер не удалось запустить!");
