@@ -36,7 +36,7 @@ public class MainStarter {
         if (options == null) {
             options = new VertxOptions();
         }
-        String dir = "simplemosquitoservice/src/main/java/verticles/";
+        String dir = "simplemosquitoservice/src/main/java/org/almkg/verticles/";
 
         try {
             File current = new File(".").getCanonicalFile();

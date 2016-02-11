@@ -1,0 +1,38 @@
+        @font-face {
+        font-family: 'Glyphicons Halflings';
+        src: url('../fonts/glyphicons-halflings-regular.eot');
+        src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/glyphicons-halflings-regular.woff') format('woff'),
+        url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+        url('../fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+        }
+@font-face {
+    font-family: 'Material-Design-Icons';
+    src: url('../fonts/Material-Design-Icons.eot');
+    src: url('../fonts/Material-Design-Icons.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Material-Design-Icons.woff') format('woff'),
+         url('../fonts/Material-Design-Icons.ttf') format('truetype'),
+         url('../fonts/Material-Design-Icons.svg#DroidSansRegular') format('svg');
+}
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/RobotoDraftBold.woff') format('woff'),
+         url('../fonts/RobotoDraftItalic.woff') format('woff'),
+         url('../fonts/RobotoDraftMedium.woff') format('woff'),
+         url('../fonts/RobotoDraftRegular.woff') format('woff')
+}
+        body,
+        h4 {
+        font-family: 'Roboto', sans-serif;
+        font-size: 16px;
+        }
+
+        html {
+        position: relative;
+        min-height: 100%;
+        }
+
+        body {
+        /* Margin bottom by footer height */
+        margin-bottom: 60px;
+        }

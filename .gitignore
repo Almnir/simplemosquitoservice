@@ -1,5 +1,7 @@
-/vedroecho.iml
+vedroecho.iml
 .settings
+file-uploads/
 .idea
+.vertx
 target/
 bower_components/
