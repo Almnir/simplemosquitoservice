@@ -24,7 +24,8 @@ CREATE TABLE Device
 	motorTemperature     FLOAT NULL,
 	temperature          FLOAT NULL,
 	timeUpdatedTimestamp TIMESTAMP NULL,
-	salt                 VARCHAR(32) NULL
+	salt                 VARCHAR(32) NULL,
+	PRIMARY KEY          (DeviceID)
 );
 
 ALTER TABLE Device
@@ -75,7 +76,8 @@ CREATE TABLE DeviceGroup
 (
 	DeviceGroupID        INTEGER NOT NULL,
 	DeviceGroupName      VARCHAR(48) NOT NULL,
-	UserID               INTEGER NOT NULL
+	UserID               INTEGER NOT NULL,
+	PRIMARY KEY          (DeviceGroupID)
 );
 
 ALTER TABLE DeviceGroup
@@ -95,7 +97,8 @@ CREATE TABLE DeviceSetCommand
 	flowRateMode         INTEGER NULL,
 	flowControlEnabled   INTEGER NULL,
 	lightEnabled         INTEGER NULL,
-	systemShutdown       INTEGER NULL
+	systemShutdown       INTEGER NULL,
+	PRIMARY KEY          (CommandStartTime, DeviceID)
 );
 
 ALTER TABLE DeviceSetCommand
@@ -108,7 +111,8 @@ CREATE TABLE User
 	password             VARCHAR(64) NOT NULL,
 	Name                 VARCHAR(20) NOT NULL,
 	RoleID               INTEGER NOT NULL,
-	salt                 VARCHAR(64) NULL
+	salt                 VARCHAR(64) NULL,
+	PRIMARY KEY          (UserID)
 );
 
 ALTER TABLE User
@@ -122,7 +126,8 @@ CREATE UNIQUE INDEX XAK1User ON User
 CREATE TABLE UserDevice
 (
 	DeviceGroupID        INTEGER NOT NULL,
-	DeviceID             BIGINT NOT NULL
+	DeviceID             BIGINT NOT NULL,
+	PRIMARY KEY          (DeviceID)
 );
 
 ALTER TABLE UserDevice
@@ -131,7 +136,8 @@ ADD PRIMARY KEY (DeviceID);
 CREATE TABLE UserRole
 (
 	RoleID               INTEGER NOT NULL,
-	role                 VARCHAR(32) NULL
+	role                 VARCHAR(32) NULL,
+	PRIMARY KEY          (RoleID)
 );
 
 ALTER TABLE UserRole

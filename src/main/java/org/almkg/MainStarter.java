@@ -20,7 +20,7 @@ public class MainStarter {
 //        });
         VertxOptions options = new VertxOptions().setClustered(false);
         DeploymentOptions deploymentOptions = new DeploymentOptions();
-        deploymentOptions.setInstances(4);
+        deploymentOptions.setInstances(1);
         String verticleID = ServiceVerticle.class.getName();
         runVerticle(verticleID, options, deploymentOptions, handler -> {
             if (!handler.succeeded()) {

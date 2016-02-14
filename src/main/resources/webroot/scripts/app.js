@@ -5,7 +5,6 @@ var app = angular.module('vedroapp', [
       $.material.init();
   });
 
-
 //app.config(function ($routeProvider) {
 //    $routeProvider.when('/', {
 //        templateUrl: '../index.html',
@@ -17,16 +16,16 @@ var app = angular.module('vedroapp', [
 
 app.controller('DriveCtrl', function ($scope, $http) {
 
-    var formData = {
-        deviceMode: "0",
-        timer1start: "default",
-        timer1stop: "default",
-        timer2start: "default",
-        timer2stop: "default",
-        flowRate: "default",
-        flowControlEnabled: true
-    };
-
+    // var form = {
+    //     deviceMode: "0",
+    //     timer1start: "default",
+    //     timer1stop: "default",
+    //     timer2start: "default",
+    //     timer2stop: "default",
+    //     flowRate: "default",
+    //     flowControlEnabled: true
+    // };
+    
     angular.element('#timer1start, #timer1stop, #timer2start, #timer2stop').bootstrapMaterialDatePicker({
         date: false,
         format: 'HH:mm',
@@ -38,7 +37,6 @@ app.controller('DriveCtrl', function ($scope, $http) {
     });
 
     $scope.submitDriveForm = function(device) {
-
         $http({
           method  : 'POST',
           url     : '/',

@@ -7,7 +7,7 @@ import java.time.Instant;
  */
 public class DeviceCommand {
 
-    public static final String TABLE_NAME = "devicecommand";
+    public static final String TABLE_NAME = "DeviceSetCommand";
 
 //    public static final String ID_FIELD = "command_id";
     public static final String COMMAND_START_FIELD = "command_start";
