@@ -12,6 +12,7 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.net.NetServer;
 import io.vertx.core.parsetools.RecordParser;
 import io.vertx.ext.jdbc.JDBCClient;
+import io.vertx.ext.sql.ResultSet;
 import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -25,6 +26,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -50,27 +52,22 @@ public class ServiceVerticle extends AbstractVerticle {
                     if (event.succeeded()) {
                         StringBuilder query = new StringBuilder();
                         Instant instant = Instant.now();
-                        Timestamp ts = Timestamp.from(instant);
-                        Date dt = Date.valueOf(ts.toLocalDateTime().toLocalDate());
-                        Time time = Time.valueOf(ts.toLocalDateTime().toLocalTime());
-                        logger.info(instant.toString());
-                        logger.info(dt.toInstant().toString());
-                        logger.info(time.toInstant().toString());
-                        Device device = new Device.DeviceBuilder(549651730122213L).setDeviceDate(dt.toInstant()).setDeviceMode("a")
-                                .setDeviceTime(time.toInstant()).setFlowControlEnabled(true).setFlowRateMode(1).setGasAvailability(true)
-                                .setGasAvailabilityPrediction(1).setGasCylinderVolume(1).setHeaterTemperature(1.0f)
-                                .setLightEnabled(true).setMotorTemperature(1.0f).setPassword("a").setReducerType(1).setTemperature(1.0f)
-                                .setTimer1start(time.toInstant()).setTimer1stop(time.toInstant()).setTimer2start(time.toInstant())
-                                .setTimer2stop(time.toInstant()).setUpdatedTimestamp(instant).setTimeUpdatedTimestamp(instant).setVersion("1")
+                        Device device = new Device.DeviceBuilder(549651730122213L).setDeviceDate(instant).setDeviceMode("1")
+                                .setDeviceTime(instant).setFlowControlEnabled(true).setFlowRateMode(1).setGasAvailability(true)
+                                .setGasAvailabilityPrediction(1).setGasCylinderVolume(1).setHeaterTemperature(1)
+                                .setLightEnabled(true).setMotorTemperature(1).setPassword("a").setSalt("a1")
+                                .setReducerType(1).setTemperature(1)
+                                .setTimer1start(instant).setTimer1stop(instant).setTimer2start(instant)
+                                .setTimer2stop(instant).setUpdatedTimestamp(instant).setTimeUpdatedTimestamp(instant).setVersion("1")
                                 .setWorkingTime(1).build();
-                        String deviceString = device.toSQLString().getKey();
+                        String deviceString = device.toSQLString();
                         logger.info("deviceString: " + deviceString);
-                        JsonArray deviceParams = device.toSQLString().getValue();
-                        logger.info("deviceParams: " + deviceParams.toString());
+//                        JsonArray deviceParams = device.toSQLString().getValue();
+//                        logger.info("deviceParams: " + deviceParams.toString());
                         query.append(DBConstants.INSERT_INTO).append(Device.TABLE_NAME).append(" ").append(deviceString)
                                 .append(";");
                         logger.info(query.toString());
-                        connection.get().updateWithParams(query.toString(), deviceParams, event1 -> {
+                        connection.get().update(query.toString(), event1 -> {
                             if (event1.succeeded()) {
                                 // общая шина сообщений
                                 EventBus eventBus = vertx.eventBus();
@@ -78,7 +75,27 @@ public class ServiceVerticle extends AbstractVerticle {
                                 // HTTP
                                 Router router = Router.router(vertx);
                                 router.route().handler(BodyHandler.create());
-                                router.route(HttpMethod.POST, "/").consumes("application/json").handler(context -> {
+                                router.route(HttpMethod.GET, "/form").produces("application/json").handler(context -> {
+                                    HttpServerResponse response = context.response();
+                                    logger.info("GET запрос от клиента с данными прилетел!");
+                                    query.delete(0, query.length());
+                                    query.append(DBConstants.SELECT_ALL_FROM).append(Device.TABLE_NAME);
+                                    connection.get().query(query.toString(), result -> {
+                                        if (result.succeeded()) {
+                                            // выборка
+                                            ResultSet resultSet = result.result();
+                                            List<JsonObject> rows = resultSet.getRows();
+                                            logger.info(rows.toString());
+                                            response.putHeader("content-type", "application/json");
+                                            response.end(rows.toString());
+                                        } else {
+                                            logger.fatal("failed to select query! " + query.toString());
+                                            res.cause().printStackTrace();
+                                            context.fail(404);
+                                        }
+                                    });
+                                });
+                                router.route(HttpMethod.POST, "/form").consumes("application/json").handler(context -> {
                                     logger.info(context.getBody());
                                     JsonObject values = context.getBodyAsJson();
                                     if (values != null && values.size() != 0) {

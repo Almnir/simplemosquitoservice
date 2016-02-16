@@ -1,8 +1,8 @@
 package org.almkg.models;
 
-import io.vertx.core.json.JsonArray;
-import org.apache.commons.lang3.tuple.Pair;
-
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.Instant;
 
 /**
@@ -40,6 +40,7 @@ public class Device {
 
     private long deviceId;
     private String password;
+    private String salt;
     private Instant deviceDate; //Системная дата утр-ва
     private Instant deviceTime; //Системное время утр-ва
     private Instant updatedTimestamp;   //метка времеи последего пакета с данными
@@ -60,11 +61,44 @@ public class Device {
     private String version;
     private float heaterTemperature;
     private float motorTemperature;
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Device{");
+        sb.append("deviceId=").append(deviceId);
+        sb.append(", password='").append(password).append('\'');
+        sb.append(", salt='").append(salt).append('\'');
+        sb.append(", deviceDate=").append(deviceDate);
+        sb.append(", deviceTime=").append(deviceTime);
+        sb.append(", updatedTimestamp=").append(updatedTimestamp);
+        sb.append(", timeUpdatedTimestamp=").append(timeUpdatedTimestamp);
+        sb.append(", deviceMode='").append(deviceMode).append('\'');
+        sb.append(", timer1start=").append(timer1start);
+        sb.append(", timer1stop=").append(timer1stop);
+        sb.append(", timer2start=").append(timer2start);
+        sb.append(", timer2stop=").append(timer2stop);
+        sb.append(", flowRateMode=").append(flowRateMode);
+        sb.append(", flowControlEnabled=").append(flowControlEnabled);
+        sb.append(", gasAvailabilityPrediction=").append(gasAvailabilityPrediction);
+        sb.append(", gasAvailability=").append(gasAvailability);
+        sb.append(", gasCylinderVolume=").append(gasCylinderVolume);
+        sb.append(", reducerType=").append(reducerType);
+        sb.append(", lightEnabled=").append(lightEnabled);
+        sb.append(", workingTime=").append(workingTime);
+        sb.append(", version='").append(version).append('\'');
+        sb.append(", heaterTemperature=").append(heaterTemperature);
+        sb.append(", motorTemperature=").append(motorTemperature);
+        sb.append(", temperature=").append(temperature);
+        sb.append('}');
+        return sb.toString();
+    }
+
     private float temperature;
 
     public Device(DeviceBuilder builder) {
         this.deviceId = builder.deviceId;
         this.password = builder.password;
+        this.salt = builder.salt;
         this.deviceDate = builder.deviceDate;
         this.deviceTime = builder.deviceTime;
         this.updatedTimestamp = builder.updatedTimestamp;
@@ -194,12 +228,27 @@ public class Device {
     public void setMotorTemperature(float motorTemperature) {        this.motorTemperature = motorTemperature;    }
     public float getTemperature() {        return temperature;    }
     public void setTemperature(float temperature) {        this.temperature = temperature;    }
+    public String getSalt() { return this.salt; }
+    public void setSalt(String salty) { this.salt = salty; }
 
-    public Pair<String, JsonArray> toSQLString() {
-        final StringBuilder sb = new StringBuilder("(");
+    private String getDate(Instant instant) {
+        Timestamp ts = Timestamp.from(instant);
+        Date dt = Date.valueOf(ts.toLocalDateTime().toLocalDate());
+        return dt.toString();
+    }
+
+    private String getTime(Instant instant) {
+        Timestamp ts = Timestamp.from(instant);
+        Time time = Time.valueOf(ts.toLocalDateTime().toLocalTime());
+        return time.toString();
+    }
+
+    public String toSQLString() {
+        StringBuilder sb = new StringBuilder("(");
         sb.append("timer2start").append(",");
         sb.append("deviceId").append(",");
         sb.append("password").append(",");
+        sb.append("salt").append(",");
         sb.append("deviceDate").append(",");
         sb.append("deviceTime").append(",");
         sb.append("updatedTimestamp").append(",");
@@ -222,61 +271,38 @@ public class Device {
         sb.append("temperature");
         sb.append(")");
         sb.append(" VALUES (");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?").append(",");
-        sb.append("?");
+        sb.append(String.format("'%s',", getTime(timer2start)));
+        sb.append(deviceId).append(",");
+        sb.append("'").append(password).append("',");
+        sb.append("'").append(salt).append("',");
+        sb.append(String.format("'%s',", getDate(deviceDate)));
+        sb.append(String.format("'%s',", getTime(deviceTime)));
+        sb.append("CURRENT_TIMESTAMP").append(",");
+        sb.append("CURRENT_TIMESTAMP").append(",");
+        sb.append("'").append(deviceMode).append("',");
+        sb.append(String.format("'%s',", getTime(timer1start)));
+        sb.append(String.format("'%s',", getTime(timer1stop)));
+        sb.append(String.format("'%s',", getTime(timer2stop)));
+        sb.append(flowRateMode).append(",");
+        sb.append(flowControlEnabled).append(",");
+        sb.append(gasAvailabilityPrediction).append(",");
+        sb.append(gasAvailability).append(",");
+        sb.append(gasCylinderVolume).append(",");
+        sb.append(reducerType).append(",");
+        sb.append(lightEnabled).append(",");
+        sb.append(workingTime).append(",");
+        sb.append("'").append(version).append("',");
+        sb.append(heaterTemperature).append(",");
+        sb.append(motorTemperature).append(",");
+        sb.append(temperature);
         sb.append(")");
-        final JsonArray params = new JsonArray();
-        params.add(timer2start);
-        params.add(deviceId);
-        params.add(password);
-        params.add(deviceDate);
-        params.add(deviceTime);
-        params.add(updatedTimestamp);
-        params.add(timeUpdatedTimestamp);
-        params.add(deviceMode);
-        params.add(timer1start);
-        params.add(timer1stop);
-        params.add(timer2stop);
-        params.add(flowRateMode);
-        params.add(flowControlEnabled);
-        params.add(gasAvailabilityPrediction);
-        params.add(gasAvailability);
-        params.add(gasCylinderVolume);
-        params.add(reducerType);
-        params.add(lightEnabled);
-        params.add(workingTime);
-        params.add(version);
-        params.add(heaterTemperature);
-        params.add(motorTemperature);
-        params.add(temperature);
-        Pair<String, JsonArray> result = Pair.of(sb.toString(), params);
-        return result;
+        return sb.toString();
     }
 
     public static class DeviceBuilder {
         private long deviceId;
         private String password;
+        private String salt;
         private Instant deviceDate;    //Системная дата утр-ва
         private Instant deviceTime;    //Системное время утр-ва
         private Instant updatedTimestamp;   //метка времеи последего пакета с данными
@@ -413,8 +439,14 @@ public class Device {
             return this;
         }
 
+        public DeviceBuilder setSalt(String salty) {
+            this.salt = salty;
+            return this;
+        }
+
         public Device build() {
             return new Device(this);
         }
+
     }
 }
