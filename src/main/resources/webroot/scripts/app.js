@@ -17,6 +17,8 @@ var app = angular.module('vedroapp', [
 app.controller('MainCtrl', function ($scope, $http, ngProgressFactory) {
 
     $scope.progressbar = ngProgressFactory.createInstance();
+    $scope.progressbar.setColor('#F19D00');
+    $scope.progressbar.setHeight('10px');
     $scope.progressbar.start();
 
     $http.get("/form")

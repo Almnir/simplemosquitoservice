@@ -36,6 +36,7 @@ public class ServiceVerticle extends AbstractVerticle {
 
     private Logger logger = LoggerFactory.getLogger(ServiceVerticle.class);
     private AtomicReference<SQLConnection> connection;
+    private AtomicReference<NetServer> server;
     private final String FROM_USER_EVENT_ADDRESS = "org.almkg.fromuser";
     private final String TO_USER_EVENT_ADDRESS = "org.almkg.touser";
 
@@ -112,9 +113,9 @@ public class ServiceVerticle extends AbstractVerticle {
 
                                 // TCP
 
-                                NetServer server = vertx.createNetServer();
+                                server = new AtomicReference<>(vertx.createNetServer());
                                 ArrayList<String> myList = new ArrayList<String>();
-                                server.connectHandler(socket -> {
+                                server.get().connectHandler(socket -> {
                                     myList.add(socket.writeHandlerID());
                                     socket.handler(RecordParser.newDelimited("\n", buffer -> {
                                         logger.info("Получил данные с ведра!"+ buffer.toString());
@@ -131,7 +132,7 @@ public class ServiceVerticle extends AbstractVerticle {
                                     });
                                 });
 
-                                server.listen(4321, "localhost", tcpres -> {
+                                server.get().listen(4321, "localhost", tcpres -> {
                                     if (tcpres.succeeded()) {
                                         logger.info("TCP Сервер запущен!");
 
@@ -171,7 +172,12 @@ public class ServiceVerticle extends AbstractVerticle {
 
     @Override
     public void stop() throws Exception {
-        connection.get().close();
+        if (connection.get() != null) {
+            connection.get().close();
+        }
+        if (server.get() != null) {
+            server.get().close();
+        }
         super.stop();
     }
 }
