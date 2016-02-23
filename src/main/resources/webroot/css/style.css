@@ -16,10 +16,10 @@
 }
 @font-face {
     font-family: 'Roboto';
-    src: url('../fonts/RobotoDraftBold.woff') format('woff'),
-         url('../fonts/RobotoDraftItalic.woff') format('woff'),
-         url('../fonts/RobotoDraftMedium.woff') format('woff'),
-         url('../fonts/RobotoDraftRegular.woff') format('woff')
+    src: url('../fonts/Roboto-Bold.woff') format('woff'),
+         url('../fonts/Roboto-RegularItalic.woff') format('woff'),
+         url('../fonts/Roboto-Medium.woff') format('woff'),
+         url('../fonts/Roboto-Regular.woff') format('woff')
 }
 body,h4,p {
         font-family: 'Roboto', sans-serif;

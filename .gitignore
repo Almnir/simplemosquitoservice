@@ -5,3 +5,4 @@ file-uploads/
 .vertx
 target/
 bower_components/
+node_modules/

@@ -7,13 +7,444 @@
  * Copyright (c) 2014-2015 Uzair Farooq
  */
 
-var Arrive=function(r,n,q){function t(e,a,c){f.addMethod(a,c,e.unbindEvent);f.addMethod(a,c,e.unbindEventWithSelectorOrCallback);f.addMethod(a,c,e.unbindEventWithSelectorAndCallback)}function p(e){e.arrive=k.bindEvent;t(k,e,"unbindArrive");e.leave=h.bindEvent;t(h,e,"unbindLeave")}if(r.MutationObserver&&"undefined"!==typeof HTMLElement){var w=0,f=function(){var e=HTMLElement.prototype.matches||HTMLElement.prototype.webkitMatchesSelector||HTMLElement.prototype.mozMatchesSelector||HTMLElement.prototype.msMatchesSelector;
-	return{matchesSelector:function(a,c){return a instanceof HTMLElement&&e.call(a,c)},addMethod:function(a,c,d){var b=a[c];a[c]=function(){if(d.length==arguments.length)return d.apply(this,arguments);if("function"==typeof b)return b.apply(this,arguments)}},callCallbacks:function(a){for(var c=0,d;d=a[c];c++)d.callback.call(d.elem)},checkChildNodesRecursively:function(a,c,d,b){for(var u=0,m;m=a[u];u++)d(m,c,b)&&b.push({callback:c.callback,elem:m}),0<m.childNodes.length&&f.checkChildNodesRecursively(m.childNodes,
-		c,d,b)},mergeArrays:function(a,c){var d={},b;for(b in a)d[b]=a[b];for(b in c)d[b]=c[b];return d},toElementsArray:function(a){"undefined"===typeof a||"number"===typeof a.length&&a!==r||(a=[a]);return a}}}(),x=function(){var e=function(){this._eventsBucket=[];this._beforeRemoving=this._beforeAdding=null};e.prototype.addEvent=function(a,c,d,b){a={target:a,selector:c,options:d,callback:b,firedElems:[]};this._beforeAdding&&this._beforeAdding(a);this._eventsBucket.push(a);return a};e.prototype.removeEvent=
-	function(a){for(var c=this._eventsBucket.length-1,d;d=this._eventsBucket[c];c--)a(d)&&(this._beforeRemoving&&this._beforeRemoving(d),this._eventsBucket.splice(c,1))};e.prototype.beforeAdding=function(a){this._beforeAdding=a};e.prototype.beforeRemoving=function(a){this._beforeRemoving=a};return e}(),v=function(e,a){var c=new x,d=this,b={fireOnAttributesModification:!1};c.beforeAdding(function(b){var c=b.target,l;if(c===r.document||c===r)c=document.getElementsByTagName("html")[0];l=new MutationObserver(function(d){a.call(this,
-	d,b)});var g=e(b.options);l.observe(c,g);b.observer=l;b.me=d});c.beforeRemoving(function(b){b.observer.disconnect()});this.bindEvent=function(d,a,l){a=f.mergeArrays(b,a);for(var g=f.toElementsArray(this),e=0;e<g.length;e++)c.addEvent(g[e],d,a,l)};this.unbindEvent=function(){var b=f.toElementsArray(this);c.removeEvent(function(a){for(var d=0;d<b.length;d++)if(this===q||a.target===b[d])return!0;return!1})};this.unbindEventWithSelectorOrCallback=function(b){var d=f.toElementsArray(this);c.removeEvent("function"===
-typeof b?function(a){for(var c=0;c<d.length;c++)if((this===q||a.target===d[c])&&a.callback===b)return!0;return!1}:function(a){for(var c=0;c<d.length;c++)if((this===q||a.target===d[c])&&a.selector===b)return!0;return!1})};this.unbindEventWithSelectorAndCallback=function(b,a){var d=f.toElementsArray(this);c.removeEvent(function(c){for(var e=0;e<d.length;e++)if((this===q||c.target===d[e])&&c.selector===b&&c.callback===a)return!0;return!1})};return this},k=new function(){function e(d,b,a){if(f.matchesSelector(d,
-		b.selector)&&(d._id===q&&(d._id=w++),-1==b.firedElems.indexOf(d._id))){if(b.options.onceOnly)if(0===b.firedElems.length)b.me.unbindEventWithSelectorAndCallback.call(b.target,b.selector,b.callback);else return;b.firedElems.push(d._id);a.push({callback:b.callback,elem:d})}}var a={fireOnAttributesModification:!1,onceOnly:!1,existing:!1};k=new v(function(a){var b={attributes:!1,childList:!0,subtree:!0};a.fireOnAttributesModification&&(b.attributes=!0);return b},function(a,b){a.forEach(function(a){var d=
-	a.addedNodes,c=a.target,g=[];null!==d&&0<d.length?f.checkChildNodesRecursively(d,b,e,g):"attributes"===a.type&&e(c,b,g)&&g.push({callback:b.callback,elem:node});f.callCallbacks(g)})});var c=k.bindEvent;k.bindEvent=function(d,b,e){"undefined"===typeof e?(e=b,b=a):b=f.mergeArrays(a,b);var m=f.toElementsArray(this);if(b.existing){for(var l=[],g=0;g<m.length;g++)for(var k=m[g].querySelectorAll(d),h=0;h<k.length;h++)l.push({callback:e,elem:k[h]});if(b.onceOnly&&l.length)return e.call(l[0].elem);f.callCallbacks(l)}c.call(this,
-	d,b,e)};return k},h=new function(){function e(a,b){return f.matchesSelector(a,b.selector)}var a={};h=new v(function(a){return{childList:!0,subtree:!0}},function(a,b){a.forEach(function(a){a=a.removedNodes;var c=[];null!==a&&0<a.length&&f.checkChildNodesRecursively(a,b,e,c);f.callCallbacks(c)})});var c=h.bindEvent;h.bindEvent=function(d,b,e){"undefined"===typeof e?(e=b,b=a):b=f.mergeArrays(a,b);c.call(this,d,b,e)};return h};n&&p(n.fn);p(HTMLElement.prototype);p(NodeList.prototype);p(HTMLCollection.prototype);
-	p(HTMLDocument.prototype);p(Window.prototype);n={};t(k,n,"unbindAllArrive");t(h,n,"unbindAllLeave");return n}}(this,"undefined"===typeof jQuery?null:jQuery,void 0);
+var Arrive = (function(window, $, undefined) {
+
+  "use strict";
+
+  if(!window.MutationObserver || typeof HTMLElement === 'undefined'){
+    return; //for unsupported browsers
+  }
+
+  var arriveUniqueId = 0;
+
+  var utils = (function() {
+    var matches = HTMLElement.prototype.matches || HTMLElement.prototype.webkitMatchesSelector || HTMLElement.prototype.mozMatchesSelector
+                  || HTMLElement.prototype.msMatchesSelector;
+
+    return {
+      matchesSelector: function(elem, selector) {
+        return elem instanceof HTMLElement && matches.call(elem, selector);
+      }, 
+      // to enable function overloading - By John Resig (MIT Licensed)
+      addMethod: function (object, name, fn) {
+        var old = object[ name ];
+        object[ name ] = function(){
+          if ( fn.length == arguments.length )
+            return fn.apply( this, arguments );
+          else if ( typeof old == 'function' )
+            return old.apply( this, arguments );
+        };
+      },
+      callCallbacks: function(callbacksToBeCalled) {
+        for (var i = 0, cb; cb = callbacksToBeCalled[i]; i++) {
+          cb.callback.call(cb.elem);
+        }
+      },
+      // traverse through all descendants of a node to check if event should be fired for any descendant
+      checkChildNodesRecursively: function(nodes, registrationData, matchFunc, callbacksToBeCalled) {
+        // check each new node if it matches the selector
+        for (var i=0, node; node = nodes[i]; i++) {
+          if (matchFunc(node, registrationData, callbacksToBeCalled)) {
+            callbacksToBeCalled.push({ callback: registrationData.callback, elem: node });
+          }
+
+          if (node.childNodes.length > 0) {
+            utils.checkChildNodesRecursively(node.childNodes, registrationData, matchFunc, callbacksToBeCalled);
+          }
+        }
+      },
+      mergeArrays: function(firstArr, secondArr){
+        // Overwrites default options with user-defined options.
+        var options = {},
+            attrName;
+        for (attrName in firstArr) {
+          options[attrName] = firstArr[attrName];
+        }
+        for (attrName in secondArr) {
+          options[attrName] = secondArr[attrName];
+        }
+        return options;
+      },
+      toElementsArray: function (elements) {
+        // check if object is an array (or array like object)
+        // Note: window object has .length property but it's not array of elements so don't consider it an array
+        if (typeof elements !== "undefined" && (typeof elements.length !== "number" || elements === window)) {
+          elements = [elements];
+        }
+        return elements;
+      }
+    };
+  })();
+
+
+  // Class to maintain state of all registered events of a single type
+  var EventsBucket = (function() {
+    var EventsBucket = function() {
+      // holds all the events
+
+      this._eventsBucket    = [];
+      // function to be called while adding an event, the function should do the event initialization/registration
+      this._beforeAdding    = null;
+      // function to be called while removing an event, the function should do the event destruction
+      this._beforeRemoving  = null;
+    };
+
+    EventsBucket.prototype.addEvent = function(target, selector, options, callback) {
+      var newEvent = {
+        target:             target, 
+        selector:           selector, 
+        options:            options, 
+        callback:           callback, 
+        firedElems:         []
+      };
+
+      if (this._beforeAdding) {
+        this._beforeAdding(newEvent);
+      }
+      
+      this._eventsBucket.push(newEvent);
+      return newEvent;
+    };
+
+    EventsBucket.prototype.removeEvent = function(compareFunction) {
+      for (var i=this._eventsBucket.length - 1, registeredEvent; registeredEvent = this._eventsBucket[i]; i--) {
+        if (compareFunction(registeredEvent)) {
+          if (this._beforeRemoving) {
+              this._beforeRemoving(registeredEvent);
+          }
+          this._eventsBucket.splice(i, 1);
+        }
+      }
+    };
+
+    EventsBucket.prototype.beforeAdding = function(beforeAdding) {
+      this._beforeAdding = beforeAdding;
+    };
+
+    EventsBucket.prototype.beforeRemoving = function(beforeRemoving) {
+      this._beforeRemoving = beforeRemoving;
+    };
+
+    return EventsBucket;
+  })();
+
+
+  /**
+   * @constructor
+   * General class for binding/unbinding arrive and leave events
+   */
+  var MutationEvents = function(getObserverConfig, onMutation) {
+    var eventsBucket    = new EventsBucket(), 
+        me              = this;
+
+    var defaultOptions = {
+      fireOnAttributesModification: false
+    };
+
+    // actual event registration before adding it to bucket
+    eventsBucket.beforeAdding(function(registrationData) {
+      var 
+        target    = registrationData.target, 
+        selector  = registrationData.selector, 
+        callback  = registrationData.callback, 
+        observer;
+
+      // mutation observer does not work on window or document
+      if (target === window.document || target === window)
+        target = document.getElementsByTagName("html")[0];
+
+      // Create an observer instance
+      observer = new MutationObserver(function(e) {
+        onMutation.call(this, e, registrationData);
+      });
+
+      var config = getObserverConfig(registrationData.options);
+      
+      observer.observe(target, config);
+
+      registrationData.observer = observer;
+      registrationData.me = me;
+    });
+
+    // cleanup/unregister before removing an event
+    eventsBucket.beforeRemoving(function (eventData) {
+      eventData.observer.disconnect();
+    });
+
+    this.bindEvent = function(selector, options, callback) {
+      options = utils.mergeArrays(defaultOptions, options);
+
+      var elements = utils.toElementsArray(this);
+
+      for (var i = 0; i < elements.length; i++) {
+        eventsBucket.addEvent(elements[i], selector, options, callback);
+      }
+    };
+
+    this.unbindEvent = function() {
+      var elements = utils.toElementsArray(this);
+      eventsBucket.removeEvent(function(eventObj) {
+        for (var i = 0; i < elements.length; i++) {
+          if (this === undefined || eventObj.target === elements[i]) {
+            return true;
+          }
+        }
+        return false;
+      });
+    };
+
+    this.unbindEventWithSelectorOrCallback = function(selector) {
+      var elements = utils.toElementsArray(this),
+          callback = selector, 
+          compareFunction;
+
+      if (typeof selector === "function") {
+        compareFunction = function(eventObj) {
+          for (var i = 0; i < elements.length; i++) {
+            if ((this === undefined || eventObj.target === elements[i]) && eventObj.callback === callback) {
+              return true;
+            }
+          }
+          return false;
+        };
+      }
+      else {
+        compareFunction = function(eventObj) {
+          for (var i = 0; i < elements.length; i++) {
+            if ((this === undefined || eventObj.target === elements[i]) && eventObj.selector === selector) {
+              return true;
+            }
+          }
+          return false;
+        };
+      }
+      eventsBucket.removeEvent(compareFunction);
+    };
+
+    this.unbindEventWithSelectorAndCallback = function(selector, callback) {
+      var elements = utils.toElementsArray(this);
+      eventsBucket.removeEvent(function(eventObj) {
+          for (var i = 0; i < elements.length; i++) {
+            if ((this === undefined || eventObj.target === elements[i]) && eventObj.selector === selector && eventObj.callback === callback) {
+              return true;
+            }
+          }
+          return false;
+      });
+    };
+
+    return this;
+  };
+
+
+  /**
+   * @constructor
+   * Processes 'arrive' events
+   */
+  var ArriveEvents = function() {
+    var mutationEvents,
+        me = this;
+
+    // Default options for 'arrive' event
+    var arriveDefaultOptions = {
+      fireOnAttributesModification: false,
+      onceOnly: false,
+      existing: false
+    };
+
+    function getArriveObserverConfig(options) {
+      var config = {
+        attributes: false,
+        childList: true,
+        subtree: true
+      };
+
+      if (options.fireOnAttributesModification) {
+        config.attributes = true;
+      }
+
+      return config;
+    }
+
+    function onArriveMutation(mutations, registrationData) {
+      mutations.forEach(function( mutation ) {
+        var newNodes    = mutation.addedNodes,
+            targetNode = mutation.target,
+            callbacksToBeCalled = [];
+
+        // If new nodes are added
+        if( newNodes !== null && newNodes.length > 0 ) {
+          utils.checkChildNodesRecursively(newNodes, registrationData, nodeMatchFunc, callbacksToBeCalled);
+        }
+        else if (mutation.type === "attributes") {
+          if (nodeMatchFunc(targetNode, registrationData, callbacksToBeCalled)) {
+            callbacksToBeCalled.push({ callback: registrationData.callback, elem: node });
+          }
+        }
+
+        utils.callCallbacks(callbacksToBeCalled);
+      });
+    }
+
+    function nodeMatchFunc(node, registrationData, callbacksToBeCalled) {
+      // check a single node to see if it matches the selector
+      if (utils.matchesSelector(node, registrationData.selector)) {
+        if(node._id === undefined) {
+          node._id = arriveUniqueId++;
+        }
+        // make sure the arrive event is not already fired for the element
+        if (registrationData.firedElems.indexOf(node._id) == -1) {
+
+          if (registrationData.options.onceOnly) {
+            if (registrationData.firedElems.length === 0) {
+              // On first callback, unbind event.
+              registrationData.me.unbindEventWithSelectorAndCallback.call(
+                  registrationData.target, registrationData.selector, registrationData.callback);
+            } else {
+              // Ignore multiple mutations which may have been queued before the event was unbound.
+              return;
+            }
+          }
+
+          registrationData.firedElems.push(node._id);
+          callbacksToBeCalled.push({ callback: registrationData.callback, elem: node });
+        }
+      }
+    }
+
+    arriveEvents = new MutationEvents(getArriveObserverConfig, onArriveMutation);
+
+    var mutationBindEvent = arriveEvents.bindEvent;
+
+    // override bindEvent function
+    arriveEvents.bindEvent = function(selector, options, callback) {
+
+      if (typeof callback === "undefined") {
+        callback = options;
+        options = arriveDefaultOptions;
+      } else {
+        options = utils.mergeArrays(arriveDefaultOptions, options);
+      }
+
+      var elements = utils.toElementsArray(this);
+
+      if (options.existing) {
+        var existing = [];
+
+        for (var i = 0; i < elements.length; i++) {
+          var nodes = elements[i].querySelectorAll(selector);
+          for (var j = 0; j < nodes.length; j++) {
+            existing.push({ callback: callback, elem: nodes[j] });
+          }
+        }
+
+        // no need to bind event if the callback has to be fired only once and we have already found the element
+        if (options.onceOnly && existing.length) {
+          return callback.call(existing[0].elem);
+        }
+
+        utils.callCallbacks(existing)
+      }
+
+      mutationBindEvent.call(this, selector, options, callback);
+    };
+
+    return arriveEvents;
+  };
+
+
+  /**
+   * @constructor
+   * Processes 'leave' events
+   */
+  var LeaveEvents = function() {
+    var mutationEvents,
+        me = this;
+
+    // Default options for 'leave' event
+    var leaveDefaultOptions = {};
+
+    function getLeaveObserverConfig(options) {
+      var config = {
+        childList: true,
+        subtree: true
+      };
+
+      return config;
+    }
+
+    function onLeaveMutation(mutations, registrationData) {
+      mutations.forEach(function( mutation ) {
+        var removedNodes  = mutation.removedNodes,
+            targetNode   = mutation.target,
+            callbacksToBeCalled = [];
+
+        if( removedNodes !== null && removedNodes.length > 0 ) {
+          utils.checkChildNodesRecursively(removedNodes, registrationData, nodeMatchFunc, callbacksToBeCalled);
+        }
+
+        utils.callCallbacks(callbacksToBeCalled);
+      });
+    }
+
+    function nodeMatchFunc(node, registrationData) {
+      return utils.matchesSelector(node, registrationData.selector);
+    }
+
+    leaveEvents = new MutationEvents(getLeaveObserverConfig, onLeaveMutation);
+
+    var mutationBindEvent = leaveEvents.bindEvent;
+
+    // override bindEvent function
+    leaveEvents.bindEvent = function(selector, options, callback) {
+
+      if (typeof callback === "undefined") {
+        callback = options;
+        options = leaveDefaultOptions;
+      } else {
+        options = utils.mergeArrays(leaveDefaultOptions, options);
+      }
+
+      mutationBindEvent.call(this, selector, options, callback);
+    };
+
+    return leaveEvents;
+  };
+
+
+  var arriveEvents = new ArriveEvents(),
+      leaveEvents  = new LeaveEvents();
+
+  function exposeUnbindApi(eventObj, exposeTo, funcName) {
+    // expose unbind function with function overriding
+    utils.addMethod(exposeTo, funcName, eventObj.unbindEvent);
+    utils.addMethod(exposeTo, funcName, eventObj.unbindEventWithSelectorOrCallback);
+    utils.addMethod(exposeTo, funcName, eventObj.unbindEventWithSelectorAndCallback);
+  }
+
+  /*** expose APIs ***/
+  function exposeApi(exposeTo) {
+    exposeTo.arrive = arriveEvents.bindEvent;
+    exposeUnbindApi(arriveEvents, exposeTo, "unbindArrive");
+
+    exposeTo.leave = leaveEvents.bindEvent;
+    exposeUnbindApi(leaveEvents, exposeTo, "unbindLeave");
+  }
+
+  if ($) {
+    exposeApi($.fn);
+  }
+  exposeApi(HTMLElement.prototype);
+  exposeApi(NodeList.prototype);
+  exposeApi(HTMLCollection.prototype);
+  exposeApi(HTMLDocument.prototype);
+  exposeApi(Window.prototype);
+
+  var Arrive = {};
+  // expose functions to unbind all arrive/leave events
+  exposeUnbindApi(arriveEvents, Arrive, "unbindAllArrive");
+  exposeUnbindApi(leaveEvents, Arrive, "unbindAllLeave");
+
+  return Arrive;
+
+})(this, typeof jQuery === 'undefined' ? null : jQuery, undefined);
