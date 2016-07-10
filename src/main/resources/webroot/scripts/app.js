@@ -1,3 +1,5 @@
+(function() {
+'use strict';
 var app = angular.module('vedroapp', [
     'ngRoute', 'ngProgress'
 ]).config(function($routeProvider){
@@ -69,3 +71,5 @@ app.controller('MainCtrl', function ($scope, $http, ngProgressFactory) {
 //        {name:'Температура окружающей среды: ', value: 28 }
 //      ];
 //});
+
+})();
